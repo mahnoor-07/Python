@@ -100,7 +100,6 @@ def menu():
         print("2. Calculator")
         print("3. Even/Odd Checker")
         print("4. Largest of Three Numbers")
-        print("5. Exit")
 
         choice = input("Choose an option (1-5): ")
 
@@ -112,9 +111,6 @@ def menu():
             even_odd_checker()
         elif choice == "4":
             largest_checker()
-        elif choice == "5":
-            print("Goodbye!")
-            break
         else:
             print("Invalid choice. Try again.")
             continue
