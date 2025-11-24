@@ -1,9 +1,7 @@
-# Word Count Program
-
 while True:   # Keep running until a valid file is entered
     try:
         file_name = input("Enter the .txt file name (or type 'exit' to quit): ")
-        
+
         # Exit option
         if file_name.lower() == "exit":
             print("Exiting program...")
