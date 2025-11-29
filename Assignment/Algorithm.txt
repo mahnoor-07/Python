@@ -1,0 +1,21 @@
+Start
+
+Create a Student class with name, roll_no, and marks
+
+Create a StudentList class that stores list of Student objects
+
+In StudentList, define __iter__() so it returns student names one-by-one
+
+Create an empty list for students
+
+Generate 100 random students and add to list
+
+Make StudentList object using this list
+
+Use for-in loop to iterate and print only student names
+
+Sort student list using roll numbers
+
+Print sorted students
+
+Stop
