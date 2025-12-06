@@ -10,108 +10,158 @@ This matrix class includes:
 - Transpose"""
 
 import random
-import math
+from dimension import Dimension
 
 class Matrix:
     def __init__(self, rows, cols, fill=0.0):
         """Create a matrix with the given number of rows and columns.
         Every element is initialized with the value 'fill' (default = 0). """
-        self.rows = rows
-        self.cols = cols
-        self.data = [[fill for _ in range(cols)] for _ in range(rows)]
-
+        try:
+            self.rows = rows
+            self.cols = cols
+            self.data = [[fill for _ in range(cols)] for _ in range(rows)]
+        except Exception as e:
+            raise TypeError(f"Error during matrix creation: {e}")
+        
+    #  Create matrix from list
     def from_list(lst):
         """Convert a python list into a column matrix."""
-        m = Matrix(len(lst), 1)
-        for i in range(len(lst)):
-            m.data[i][0] = lst[i]
-        return m
+        try:
+            dim = Dimension(len(lst), 1) # Store the list size as matrix dimensions
+            m = Matrix(dim)              # Create a column matrix using those dimensions
+            for i, val in enumerate(lst):
+                m.data[i][0] = val
+            return m
+        except Exception as e:
+            raise ValueError(f"Cannot convert list to matrix: {e}")
 
     def to_list(self):
-        """Convert a column matrix back to a python list."""
-        flat = []
-        for i in range(self.rows):
-            flat.append(self.data[i][0])
-        return flat
+        """Convert a column matrix back to a Python list."""
+        try:
+            flat = []
+            for i in range(self.rows):
+                flat.append(self.data[i][0])
+            return flat
+        except Exception as e:
+            raise ValueError(f"Cannot convert matrix to list: {e}")
 
+     #  RANDOMIZE
     def randomize(self):
         """Fill matrix with random values between -1 and 1.
         Useful for initializing neural network weights."""
-        for i in range(self.rows):
-            for j in range(self.cols):
-                self.data[i][j] = random.uniform(-1, 1)
-
+        try:
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    self.data[i][j] = random.uniform(-1, 1)
+        except Exception as e:
+            raise RuntimeError(f"Failed to randomize matrix: {e}")
+        
     #  MATRIX ADDITION
-    def add(self, other):
+    def __add__(self, other):
         """Matrix addition (same size only)."""
-        if isinstance(other, Matrix):
-            if self.rows != other.rows or self.cols != other.cols:
-                raise ValueError("Matrix sizes do not match for addition.")
-            for i in range(self.rows):
-                for j in range(self.cols):
-                    self.data[i][j] += other.data[i][j]
-        else:
+        try:
+            result = Matrix(Dimension(self.rows, self.cols))
+            if isinstance(other, Matrix):
+                if self.rows != other.rows or self.cols != other.cols:
+                    raise ValueError("Matrix sizes do not match for addition.")
+
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        self.data[i][j] += other.data[i][j]
+            else:
             # Scalar addition
-            for i in range(self.rows):
-                for j in range(self.cols):
-                    self.data[i][j] += other
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        self.data[i][j] += other
+
+        except Exception as e:
+            raise ValueError(f"Error during matrix addition: {e}")   
 
     #  MATRIX SUBTRACTION
-    def subtract(a, b):
+    def __sub__(self, other):
         """Return new matrix = a - b."""
-        if a.rows != b.rows or a.cols != b.cols:
-            raise ValueError("Matrix sizes do not match for subtraction.")
+        try:
+            result = Matrix(Dimension(self.rows, self.cols))
 
-        result = Matrix(a.rows, a.cols)
-        for i in range(a.rows):
-            for j in range(a.cols):
-                result.data[i][j] = a.data[i][j] - b.data[i][j]
-        return result
+            if isinstance(other, Matrix):
+                if self.rows != other.rows or self.cols != other.cols:
+                    raise ValueError("Matrix sizes do not match for -.")
 
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        result.data[i][j] = self.data[i][j] - other.data[i][j]
+            else:  # scalar
+                for i in range(self.rows):
+                    for j in range(self.cols):
+                        result.data[i][j] = self.data[i][j] - other
+            return result
+        except Exception as e:
+            raise ValueError(f"Error during matrix subtraction: {e}")
+        
     #  SCALAR MULTIPLICATION
-    def multiply(self, n):
-        """Multiply all matrix elements by scalar n."""
-        for i in range(self.rows):
-            for j in range(self.cols):
-                self.data[i][j] *= n
+    def __mul__(self, other):
+        """Scalar multiplication only."""
+        try:
+            if isinstance(other, Matrix):
+                raise TypeError("Use dot() for matrix multiplication.")
+            result = Matrix(Dimension(self.rows, self.cols))
+
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    result.data[i][j] = self.data[i][j] * other
+            return result
+        except Exception as e:
+            raise ValueError(f"Error during scalar multiplication: {e}")
 
     #  MATRIX MULTIPLICATION
     def dot(a, b):
         """Matrix multiplication: result = a * b"""
-        if a.cols != b.rows:
-            raise ValueError("Incompatible matrix sizes for multiplication.")
+        try:
+            if a.cols != b.rows:
+                raise ValueError("Incompatible matrix sizes for multiplication.")
 
-        result = Matrix(a.rows, b.cols)
+            result = Matrix(Dimension(a.rows, b.cols))
 
-        for i in range(a.rows):
-            for j in range(b.cols):
-                sum_val = 0
-                for k in range(a.cols):
-                    sum_val += a.data[i][k] * b.data[k][j]
-                result.data[i][j] = sum_val
-        return result
+            for i in range(a.rows):
+                for j in range(b.cols):
+                    sum_val = 0
+                    for k in range(a.cols):
+                        sum_val += a.data[i][k] * b.data[k][j]
+                    result.data[i][j] = sum_val
+            return result
+        except Exception as e:
+            raise ValueError(f"Error during matrix multiplication: {e}")
 
     #  ELEMENT-WISE ACTIVATION MAP
     def map(self, func):
         """Apply a function to each element.
         Example: applying sigmoid activation to all values."""
-        for i in range(self.rows):
-            for j in range(self.cols):
-                self.data[i][j] = func(self.data[i][j])
-
+        try:
+            for i in range(self.rows):
+                for j in range(self.cols):
+                    self.data[i][j] = func(self.data[i][j])
+        except Exception as e:
+            raise ValueError(f"Error applying map(): {e}")
+    # Element-wise Map (returns new matrix)
     def map_static(matrix, func):
         """Return a new matrix with function applied."""
-        result = Matrix(matrix.rows, matrix.cols)
-        for i in range(matrix.rows):
-            for j in range(matrix.cols):
-                result.data[i][j] = func(matrix.data[i][j])
-        return result
+        try:
+            result = Matrix(Dimension(matrix.cols, matrix.rows))
+            for i in range(matrix.rows):
+                for j in range(matrix.cols):
+                    result.data[i][j] = func(matrix.data[i][j])
+            return result
+        except Exception as e:
+            raise ValueError(f"Error in map_static(): {e}")
 
     #  MATRIX TRANSPOSE
     def transpose(matrix):
         """Transpose a matrix."""
-        result = Matrix(matrix.cols, matrix.rows)
-        for i in range(matrix.rows):
-            for j in range(matrix.cols):
-                result.data[j][i] = matrix.data[i][j]
-        return result
+        try:
+            result = Matrix(Dimension(matrix.cols, matrix.rows))
+            for i in range(matrix.rows):
+                for j in range(matrix.cols):
+                    result.data[j][i] = matrix.data[i][j]
+            return result
+        except Exception as e:
+            raise ValueError(f"Error during transpose: {e}")
