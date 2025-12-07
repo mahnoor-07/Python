@@ -10,7 +10,7 @@ if __name__ == "__main__":
     print("Day 1: Creating and randomizing a matrix\n")
 
     dim = Dimension(3, 3)
-    m = Matrix(dim.rows, dim.cols)
+    m = Matrix(dim)
     m.randomize()
 
     for row in m.data:

@@ -13,13 +13,13 @@ import random
 from dimension import Dimension
 
 class Matrix:
-    def __init__(self, rows, cols, fill=0.0):
+    def __init__(self, dim: Dimension, fill=0.0):
         """Create a matrix with the given number of rows and columns.
         Every element is initialized with the value 'fill' (default = 0). """
         try:
-            self.rows = rows
-            self.cols = cols
-            self.data = [[fill for _ in range(cols)] for _ in range(rows)]
+            self.rows = dim.rows
+            self.cols = dim.cols
+            self.data = [[fill for _ in range(self.cols)] for _ in range(self.rows)]
         except Exception as e:
             raise TypeError(f"Error during matrix creation: {e}")
         
