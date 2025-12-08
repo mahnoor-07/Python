@@ -47,7 +47,7 @@ The ANN includes:
 ### **Train and test the ANN**
 
 ## **3. Project Structure**
-
+```
 ANN_Project/
 │
 ├── matrix_class.py       # Full matrix operations (written from scratch)
@@ -58,7 +58,7 @@ ANN_Project/
 ├── executor.py           # Safe execution wrapper for the trained model
 ├── main.py               # Demonstration: training + running ANN
 └── README.md             # Project documentation
-
+```
 ## **4. Implementation Details**
 
 ### **4.1 Matrix Class**
