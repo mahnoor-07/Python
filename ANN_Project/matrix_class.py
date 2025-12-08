@@ -67,13 +67,14 @@ class Matrix:
 
                 for i in range(self.rows):
                     for j in range(self.cols):
-                        self.data[i][j] += other.data[i][j]
+                        result.data[i][j] = self.data[i][j] + other.data[i][j]
             else:
             # Scalar addition
                 for i in range(self.rows):
                     for j in range(self.cols):
-                        self.data[i][j] += other
+                        result.data[i][j] = self.data[i][j] + other
 
+            return result
         except Exception as e:
             raise ValueError(f"Error during matrix addition: {e}")   
 
@@ -132,6 +133,24 @@ class Matrix:
         except Exception as e:
             raise ValueError(f"Error during matrix multiplication: {e}")
 
+    # ELEMENT-WISE MULTIPLICATION 
+    @staticmethod
+    def multiply_elementwise(a, b):
+        """Element-wise multiplication (Hadamard product)."""
+        try:
+            if a.rows != b.rows or a.cols != b.cols:
+                raise ValueError("Size mismatch in element-wise multiplication")
+
+            result = Matrix(Dimension(a.rows, a.cols))
+
+            for i in range(a.rows):
+                for j in range(a.cols):
+                    result.data[i][j] = a.data[i][j] * b.data[i][j]
+
+            return result
+        except Exception as e:
+            raise ValueError(f"Error during element-wise multiplication: {e}")
+
     #  ELEMENT-WISE ACTIVATION MAP
     def map(self, func):
         """Apply a function to each element.
@@ -146,7 +165,7 @@ class Matrix:
     def map_static(matrix, func):
         """Return a new matrix with function applied."""
         try:
-            result = Matrix(Dimension(matrix.cols, matrix.rows))
+            result = Matrix(Dimension(matrix.rows, matrix.cols))
             for i in range(matrix.rows):
                 for j in range(matrix.cols):
                     result.data[i][j] = func(matrix.data[i][j])
